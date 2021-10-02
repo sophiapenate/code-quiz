@@ -94,7 +94,8 @@ var answerQuestion = function(event) {
         var pickedAnswer = targetEl.textContent;
         var correctAnswer = quizQuestions[currentQuestion].answer;
         if (pickedAnswer === correctAnswer) {
-            console.log("Correct!");
+            console.log("Correct! You added " + timeReward + " seconds to the clock!");
+            timer += timeReward;
         } else {
             console.log("Sorry, that's incorrect. You lose " + timePenalty + " seconds");
             // check if time remaining is greater than timePenalty
@@ -104,7 +105,6 @@ var answerQuestion = function(event) {
                 endQuiz(timesUpMessage);
                 return false;
             }
-            
         }
         
         // update currentQuestion counter
