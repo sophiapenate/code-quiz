@@ -1,5 +1,4 @@
 /*** QUIZ SETTINGS ***/
-
 // Set, in seconds, time given to finish quiz
 var timeGiven = 100;
 
@@ -12,8 +11,8 @@ var timeReward = 5;
 // Set message to display if player runs out of time
 var timesUpMessage = "Time's Up!"
 
-// Set message to display if player answeres all questions
-var answeredAllMessage = "Excellent! You answered every question!"
+// Set message to display if player answeres all questions correctly
+var answeredAllMessage = "Excellent! You answered every question correctly!"
 
 // Set quiz questions
 var quizQuestions = [
@@ -50,8 +49,11 @@ var quizQuestions = [
 ];
 /*** END QUIZ SETTINGS ***/ 
 
+/*** RANDOMIZE QUIZ ***/ 
 // Randomize quiz question order - push quizQuestions objects into a new array in a random order
+/*** END RANDOMIZE QUIZ ***/ 
 
+/*** QUIZ SETUP AND VARIABLE DECLARATIONS ***/
 // Set and display timer
 var timer = timeGiven;
 var timeRemainingEl = document.querySelector("#time-remaining");
@@ -68,7 +70,31 @@ var optionsListEl = document.querySelector("#options");
 // Set currentQuestion counter
 var currentQuestion = 0;
 
-// Start Quiz Function - To execute when start button is clicked
+// Set counter to track number of questions anwered correctly
+var correctAnswersCounter = 0;
+
+// Create array to store any new scores, and load any scores from localStorage into it
+var newScores = []
+var loadScores = function() {
+    var savedScores = localStorage.getItem("scores");
+
+    // if there are no saved scores, return out of function
+    if (!savedScores) {
+        return false;
+    } else {
+        // parse savedScores into an array of objects
+        savedScores = JSON.parse(savedScores);
+        
+        // Loop through objects in savedScores and push into newScores
+        for (var i = 0; i < savedScores.length; i++) {
+            newScores.push(savedScores[i]);
+        }
+    }
+}
+loadScores();
+/*** END QUIZ SETUP AND VARIABLE DECLARATIONS ***/
+
+// Start Quiz Function - To call when start button is clicked
 var startQuiz = function() {
     // start timer
     startTimer = setInterval(function() {
@@ -85,7 +111,7 @@ var startQuiz = function() {
     nextQuestion();
 }
 
-// Answer Question Function - To execute when a question is answered
+// Answer Question Function - To call when a question is answered
 var answerQuestion = function(event) {
     // check if a question button was clicked before proceeding
     var targetEl = event.target;
@@ -95,13 +121,19 @@ var answerQuestion = function(event) {
         var correctAnswer = quizQuestions[currentQuestion].answer;
         if (pickedAnswer === correctAnswer) {
             console.log("Correct! You added " + timeReward + " seconds to the clock!");
+            // add timeReward to timer
             timer += timeReward;
+            // add 1 to correctAnswersCounter
+            correctAnswersCounter++;
         } else {
             console.log("Sorry, that's incorrect. You lose " + timePenalty + " seconds");
             // check if time remaining is greater than timePenalty
             if (timer > timePenalty) {
+                // subtract time penalty from timer
                 timer -= timePenalty;
             } else {
+                // set timer to zero and end quiz
+                timer = 0;
                 endQuiz(timesUpMessage);
                 return false;
             }
@@ -114,13 +146,12 @@ var answerQuestion = function(event) {
         if (currentQuestion < quizQuestions.length) {
             nextQuestion();
         } else {
-            // otherwise, end quiz
             endQuiz(answeredAllMessage);
         }
     }
 }
 
-// Next Question Function - To execute at start of quiz and after each question is answered
+// Next Question Function - To call at start of quiz and after each question is answered
 var nextQuestion = function() {
     // replace #quiz-content with current question content
     promptTitleEl.textContent = "Question " + (currentQuestion + 1);
@@ -136,17 +167,42 @@ var nextQuestion = function() {
     }
 }
 
-// End Quiz Function - To execute when timer or questions run out
+// End Quiz Function - To call when timer or questions run out
 var endQuiz = function(message) {
-    // stop timer
+    // stop timer and display final time remaining
     clearInterval(startTimer);
+    timeRemainingEl.textContent = timer;
 
-    // set player's score equal to time remaining
-    var score = timer;
+    // Set player's score - Give player 100 points for each question answered correctly + bonus for time remaining
+    var score = (correctAnswersCounter * 100) + timer;
+    console.log(score);
+
+    // Save player's score
+    saveScore(score);
 
     promptTitleEl.textContent = message;
-    promptDetailsEl.textContent = "Your score is " + score;
+    promptDetailsEl.textContent = "You answered " + correctAnswersCounter + " questions correctly with " + timer + " seconds remaining.";
     optionsListEl.innerHTML = "";
+}
+
+// Save player's score to localStorage
+var saveScore = function(playerScore) {
+    var playerName = window.prompt("Enter your name to save your score.");
+
+    var playerStats = {
+        name: playerName,
+        score: playerScore
+    }
+
+    // push playerStats into scores array
+    newScores.push(playerStats);
+    
+    // sort newScores by score
+    newScores.sort(function(a, b) {return b.score - a.score});
+    console.log(newScores);
+
+    // overwrite scores array in localStorage with newScores array
+    localStorage.setItem("scores", JSON.stringify(newScores));
 }
 
 startBtn.addEventListener("click", startQuiz);
