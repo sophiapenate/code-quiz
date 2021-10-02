@@ -131,6 +131,8 @@ var answerQuestion = function(event) {
             if (timer > timePenalty) {
                 // subtract time penalty from timer
                 timer -= timePenalty;
+                // add question back into rotation
+                quizQuestions.push(quizQuestions[currentQuestion]);
             } else {
                 // set timer to zero and end quiz
                 timer = 0;
@@ -173,7 +175,7 @@ var endQuiz = function(message) {
     clearInterval(startTimer);
     timeRemainingEl.textContent = timer;
 
-    // Set player's score - Give player 100 points for each question answered correctly + bonus for time remaining
+    // set player's score (give player 100 points for each question answered correctly + bonus for time remaining)
     var score = (correctAnswersCounter * 100) + timer;
     console.log(score);
 
