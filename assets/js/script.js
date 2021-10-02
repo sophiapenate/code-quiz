@@ -47,9 +47,35 @@ var startQuiz = function() {
     nextQuestion();
 }
 
+var answerQuestion = function(event) {
+    // check if a question button was clicked before proceeding
+    var targetEl = event.target;
+    if (targetEl.matches(".question-btn")) {
+        // check if answered correctly
+        var pickedAnswer = targetEl.textContent;
+        var correctAnswer = quizQuestions[currentQuestion].answer;
+        if (pickedAnswer === correctAnswer) {
+            console.log("Correct!");
+        } else {
+            console.log("Sorry, that's incorrect.");
+        }
+        
+        // update currentQuestion counter
+        currentQuestion++;
+
+        // if there are more questions to answer, go to next question
+        if (currentQuestion < quizQuestions.length) {
+            nextQuestion();
+        } else {
+            endQuiz();
+        }
+    }
+}
+
 var nextQuestion = function() {
     // replace #quiz-content with current question content
-    promptTitleEl.textContent = quizQuestions[currentQuestion].question;
+    promptTitleEl.textContent = "Question " + (currentQuestion + 1);
+    promptDetailsEl.textContent = quizQuestions[currentQuestion].question;
     optionsListEl.innerHTML = "";
     
     // loop through current question's options and create button for each
@@ -59,19 +85,14 @@ var nextQuestion = function() {
         optionBtn.textContent = quizQuestions[currentQuestion].options[i];
         optionsListEl.appendChild(optionBtn);
     }
+}
 
-    // update currentQuestion counter
-    currentQuestion++;
-
-    // when any answer is selected, go to next question
-    // ADD CONDITION: DON'T TRY TO PULL ANOTHER QUESTION IF WE'RE AT THE END OF THE ARRAY
-    // MOVE THIS INTO ITS OWN FUNCTION
-    optionsListEl.addEventListener("click", function(event) {
-        var targetEl = event.target;
-        if (targetEl.matches(".question-btn")) {
-            nextQuestion();
-        }
-    })
+var endQuiz = function() {
+    promptTitleEl.textContent = "Game Over!";
+    promptDetailsEl.textContent = "Your score is ";
+    optionsListEl.innerHTML = "";
 }
 
 startBtn.addEventListener("click", startQuiz);
+
+optionsListEl.addEventListener("click", answerQuestion);
