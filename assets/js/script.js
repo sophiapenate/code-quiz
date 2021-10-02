@@ -49,11 +49,10 @@ var quizQuestions = [
 ];
 /*** END QUIZ SETTINGS ***/ 
 
-/*** RANDOMIZE QUIZ ***/ 
-// Randomize quiz question order - push quizQuestions objects into a new array in a random order
-/*** END RANDOMIZE QUIZ ***/ 
-
 /*** QUIZ SETUP AND VARIABLE DECLARATIONS ***/
+// randomize order of quiz questions
+quizQuestions.sort(function(a, b){return 0.5 - Math.random()});
+
 // Set and display timer
 var timer = timeGiven;
 var timeRemainingEl = document.querySelector("#time-remaining");
@@ -190,6 +189,8 @@ var endQuiz = function(message) {
 // Save player's score to localStorage
 var saveScore = function(playerScore) {
     var playerName = window.prompt("Enter your name to save your score.");
+    // if player leaves name blank, set name to 'Anonymous'
+    if (!playerName) { playerName = "Anonymous" };
 
     var playerStats = {
         name: playerName,
