@@ -37,22 +37,6 @@ body {
     color: var(--white);
 }
 
-button {
-    background-color: var(--terciary-color);
-    color: var(--white);
-    padding: 12px 18px;
-    border: none;
-    border-radius: 5px;
-    font-size: 18px;
-    letter-spacing: .03em;
-    box-shadow: 0 0 8px var(--primary-color);
-    margin: 15px;
-}
-
-button:hover {
-    cursor: pointer;
-    background-color: var(--primary-accent);
-}
 
 #app-wrap {
     width: 90%;
@@ -66,6 +50,41 @@ button:hover {
 
 main {
     margin:0 30px;
+}
+
+button,
+input[type="submit"] {
+    background-color: var(--terciary-color);
+    color: var(--white);
+    padding: 12px 18px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    letter-spacing: .03em;
+    box-shadow: 0 0 8px var(--primary-color);
+    margin: 15px;
+}
+
+button:hover,
+input[type="submit"]:hover {
+    cursor: pointer;
+    background-color: var(--primary-accent);
+}
+
+input[type="text"] {
+    background-color: var(--white);
+    color: var(--primary-color);
+    padding: 12px 18px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    letter-spacing: .03em;
+    margin: 15px;
+    opacity: .8;
+}
+
+input[type="text"]:focus {
+    opacity: 1;
 }
 /* End Global Styles */
 
@@ -127,5 +146,42 @@ header #timer-display {
 #options {
     text-align: center;
 }
+
+#scores-list li {
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 2em;
+    letter-spacing: .03em;
+    padding: 10px 0;
+}
+
+#scores-list li .player-score {
+    color: var(--correct-accent);
+    text-align: right;
+}
 /* End Main Section Styles */
+
+/* High Scores Table Styles */
+#high-scores {
+    width: 100%;
+    border: none;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+#high-scores th {
+    font-size: 22px;
+    padding: 10px 30px;
+}
+
+#high-scores td {
+    font-size: 18px;
+    padding: 10px 30px;
+}
+
+#high-scores tr:nth-child(odd) {
+    background-color: rgba(255,255,255, 0.05);
+}
+
+/* End High Scores Table Styles */
 

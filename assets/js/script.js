@@ -2,11 +2,13 @@
 // Set, in seconds, time given to finish quiz
 var timeGiven = 100;
 
-// Set, in seconds, time penalty for answering incorrectly
+// Set penalties for answering incorrectly
 var timePenalty = 10;
+var scorePenalty = 50;
 
-// Set, in seconds, time rewarded for answering correctly
+// Set rewards for answering correctly
 var timeReward = 5;
+var scoreReward = 100;
 
 // Set message to display if player runs out of time
 var timesUpMessage = "Time's Up!"
@@ -61,6 +63,7 @@ timeRemainingEl.textContent = timer;
 var startTimer;
 
 // Store #quiz-content elements in variables
+var mainEl = document.querySelector("main");
 var promptEl = document.querySelector("#prompt");
 var optionsEl = document.querySelector("#options");
 var startBtn = document.querySelector("#start-btn");
@@ -75,6 +78,9 @@ var currentQuestion = 0;
 // Set counter to track number of questions anwered correctly and incorrectly
 var correctAnswersCounter = 0;
 var incorrectAnswersCounter = 0;
+
+// Declare score variable globally so multiple functions can access it
+var score = 0;
 
 // Create array to store any new scores, and load any scores from localStorage into it
 var newScores = []
@@ -128,10 +134,14 @@ var answerQuestion = function (event) {
             correctAnswersCounter++;
             // add timeReward to timer
             timer += timeReward;
+            // add scoreReward to score
+            score += scoreReward;
         } else {
             console.log("Sorry, that's incorrect. You lose " + timePenalty + " seconds");
             // add 1 to incorrectAnswersCounter
             incorrectAnswersCounter++;
+            // subtract scorePenalty from score
+            score -= scorePenalty
             // check if time remaining is greater than timePenalty
             if (timer > timePenalty) {
                 // subtract time penalty from timer
@@ -184,14 +194,11 @@ var endQuiz = function (message) {
     clearInterval(startTimer);
     timeRemainingEl.textContent = timer;
 
-    // set player's score (give player 100 points for each question answered correctly, -50 for each incorrect answer + bonus for time remaining)
-    var score = (correctAnswersCounter * 100) - (incorrectAnswersCounter * 50) + timer;
+    // add score bonus for time remaining
+    if (timer > 0) { score += timer };
     // if player earned negative points, reset score to 0
     if (score < 0) { score = 0 };
     console.log(score);
-
-    // Save player's score
-    saveScore(score);
 
     // clear #quiz-content
     promptEl.innerHTML = "";
@@ -222,23 +229,31 @@ var endQuiz = function (message) {
     var nameInput = document.createElement("input")
     var nameSubmit = document.createElement("input")
     nameInput.setAttribute("type", "text");
+    nameInput.setAttribute("name", "player-name");
     nameInput.setAttribute("placeholder", "Your Name");
     nameSubmit.setAttribute("type", "submit");
     nameSubmit.setAttribute("value", "Submit");
     nameForm.appendChild(nameInput);
     nameForm.appendChild(nameSubmit);
     optionsEl.appendChild(nameForm);
+
+    // set focus on name input
+    nameInput.focus();
+
+    // add event listener to form
+    nameForm.addEventListener("submit", saveScore);
 }
 
 // Save player's score to localStorage
-var saveScore = function (playerScore) {
-    var playerName = window.prompt("Enter your name to save your score.");
+var saveScore = function (event) {
+    event.preventDefault();
+    var playerName = document.querySelector("input[name='player-name']").value;
     // if player leaves name blank, set name to 'Anonymous'
     if (!playerName) { playerName = "Anonymous" };
 
     var playerStats = {
         name: playerName,
-        score: playerScore
+        score: score
     }
 
     // push playerStats into scores array
@@ -250,6 +265,38 @@ var saveScore = function (playerScore) {
 
     // overwrite scores array in localStorage with newScores array
     localStorage.setItem("scores", JSON.stringify(newScores));
+
+    viewHighScores();
+}
+
+// View High Scores Function - Call when button clicked or player saves their score
+var viewHighScores = function() {    
+    // clear main content
+    mainEl.innerHTML = "";
+
+    // setup high scores table
+    var scoresTableEl = document.createElement("table");
+    scoresTableEl.id = "high-scores"
+    mainEl.appendChild(scoresTableEl);
+    var scoresTitleRowEl = document.createElement("tr");
+    scoresTableEl.appendChild(scoresTitleRowEl);
+    var rankTitleEl = document.createElement("th");
+    rankTitleEl.textContent = "Rank";
+    scoresTitleRowEl.appendChild(rankTitleEl);
+    var nameTitleEl = document.createElement("th");
+    nameTitleEl.textContent = "Player Name";
+    scoresTitleRowEl.appendChild(nameTitleEl);
+    var scoreTitleEl = document.createElement("th");
+    scoreTitleEl.textContent = "Score";
+    scoresTitleRowEl.appendChild(scoreTitleEl);
+
+    // loop through newScores (which has already been loaded with saved scores) and add tr for each score
+    for (var i = 0; i < newScores.length; i++) {
+        // create tr
+        var rowEl = document.createElement("tr");
+        rowEl.innerHTML = "<td>#" + (i + 1) + "</td><td>" + newScores[i].name + "</td><td>" + newScores[i].score + "</td>";
+        scoresTableEl.appendChild(rowEl);
+    }
 }
 
 startBtn.addEventListener("click", startQuiz);
