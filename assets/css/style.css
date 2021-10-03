@@ -11,16 +11,26 @@
 /* End Site Colors */
 
 /* Utility Classes */
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
 .code {
     font-family: 'Fira Code', monospace;
 }
 
-.correct {
-    color: var(--correct-accent);
+.correct,
+.correct:hover {
+    background-color: var(--correct-accent) !important;
 }
 
-.incorrect {
-    color: var(--incorrect-accent);
+.incorrect,
+.incorrect:hover {
+    background-color: var(--incorrect-accent) !important;
 }
 /* End Utility Classes */
 
@@ -108,7 +118,7 @@ header h1 {
 }
 
 header #timer-display {
-    background-color: var(--correct-accent);
+    background-color: var(--terciary-color);
     padding: 12px 18px;
     border-radius: 5px;
     font-size: 18px;

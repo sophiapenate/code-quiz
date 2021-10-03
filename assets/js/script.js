@@ -64,6 +64,9 @@ var startTimer;
 
 // Store #quiz-content elements in variables
 var mainEl = document.querySelector("main");
+var timerEl = document.querySelector("#timer-display");
+var viewScoresBtn = document.querySelector("#view-scores");
+var reloadBtn = document.querySelector("#reload");
 var promptEl = document.querySelector("#prompt");
 var optionsEl = document.querySelector("#options");
 var startBtn = document.querySelector("#start-btn");
@@ -129,7 +132,9 @@ var answerQuestion = function (event) {
         var pickedAnswer = targetEl.textContent;
         var correctAnswer = quizQuestions[currentQuestion].answer;
         if (pickedAnswer === correctAnswer) {
-            console.log("Correct! You added " + timeReward + " seconds to the clock!");
+            // change color of button and timer
+            targetEl.setAttribute("class", "correct");
+            timerEl.setAttribute("class", "correct");
             // add 1 to correctAnswersCounter
             correctAnswersCounter++;
             // add timeReward to timer
@@ -137,7 +142,9 @@ var answerQuestion = function (event) {
             // add scoreReward to score
             score += scoreReward;
         } else {
-            console.log("Sorry, that's incorrect. You lose " + timePenalty + " seconds");
+            // change color of button and timer
+            targetEl.setAttribute("class", "incorrect");
+            timerEl.setAttribute("class", "incorrect");
             // add 1 to incorrectAnswersCounter
             incorrectAnswersCounter++;
             // subtract scorePenalty from score
@@ -159,12 +166,18 @@ var answerQuestion = function (event) {
         // update currentQuestion counter
         currentQuestion++;
 
-        // if there are more questions to answer, go to next question
-        if (currentQuestion < quizQuestions.length) {
-            nextQuestion();
-        } else {
-            endQuiz(answeredAllMessage);
-        }
+        // pause long enough for player to see if they were correct or incorrect, then...
+        setTimeout(function() {
+            // remove color from timer
+            timerEl.removeAttribute("class");
+
+            // if there are more questions to answer, go to next question
+            if (currentQuestion < quizQuestions.length) {
+                nextQuestion();
+            } else {
+                endQuiz(answeredAllMessage);
+            }
+        }, 500);  
     }
 }
 
@@ -190,9 +203,13 @@ var nextQuestion = function () {
 
 // End Quiz Function - To call when timer or questions run out
 var endQuiz = function (message) {
-    // stop timer and display final time remaining
+    // stop timer and hide
     clearInterval(startTimer);
-    timeRemainingEl.textContent = timer;
+    timerEl.setAttribute("class", "hide");
+
+    // show reloadBtn and change text to Try Again
+    reloadBtn.setAttribute("class", "show");
+    reloadBtn.textContent = "Try Again";
 
     // add score bonus for time remaining
     if (timer > 0) { score += timer };
@@ -271,6 +288,17 @@ var saveScore = function (event) {
 
 // View High Scores Function - Call when button clicked or player saves their score
 var viewHighScores = function() {    
+    // stop and hide timer
+    clearInterval(startTimer);
+    timerEl.setAttribute("class", "hide");
+
+    // hide viewScoresBtn
+    viewScoresBtn.setAttribute("class", "hide");
+
+    // set and show reloadBtn
+    reloadBtn.textContent = "Back to Quiz";
+    reloadBtn.setAttribute("class", "show");
+    
     // clear main content
     mainEl.innerHTML = "";
 
@@ -299,6 +327,15 @@ var viewHighScores = function() {
     }
 }
 
+// Reload Page Function - call when player clicks reloadBtn
+var reload = function() {
+    location.reload();
+}
+
 startBtn.addEventListener("click", startQuiz);
 
 optionsEl.addEventListener("click", answerQuestion);
+
+viewScoresBtn.addEventListener("click", viewHighScores);
+
+reloadBtn.addEventListener("click", reload);
