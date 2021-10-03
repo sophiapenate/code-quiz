@@ -19,17 +19,20 @@
 
         <header>
             <h1>Coding Quiz</h1>
-            <button>View High Scores</button>
+            <div id="timer-display">Time remaining: <span id="time-remaining"></span> seconds</div>
+            <button id="view-scores">View High Scores</button>
         </header>
 
         <main>
-            <!-- <div id="timer-display">Time remaining: <span id="time-remaining"></span> seconds</div> -->
+            <div id="prompt">
+                <h2>Welcome to the Coding Quiz Challenge!</h2>
+                <p id="instructions"></p>
+                <p>Click START to begin!</p>
+            </div>
 
-            <h2 id="prompt-title">Welcome to the Coding Quiz Challenge!</h2>
-            <p id="prompt-details">Answer the questions before your time runs out.</p>
-            <ul id="options">
+            <div id="options">
                 <button id="start-btn">Start</button>
-            </ul>
+            </div>
         </main>
         
     </div>
