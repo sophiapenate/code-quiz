@@ -128,7 +128,7 @@ var answerQuestion = function (event) {
     // check if a question button was clicked before proceeding
     var targetEl = event.target;
     if (targetEl.matches(".question-btn")) {
-        // check if answered correctly
+        // check if answered correctly or incorrectly
         var pickedAnswer = targetEl.textContent;
         var correctAnswer = quizQuestions[currentQuestion].answer;
         if (pickedAnswer === correctAnswer) {
@@ -137,10 +137,11 @@ var answerQuestion = function (event) {
             timerEl.setAttribute("class", "correct");
             // add 1 to correctAnswersCounter
             correctAnswersCounter++;
-            // add timeReward to timer
-            timer += timeReward;
             // add scoreReward to score
             score += scoreReward;
+            // add timeReward to timer and update timer display
+            timer += timeReward;
+            timeRemainingEl.textContent = timer;
         } else {
             // change color of button and timer
             targetEl.setAttribute("class", "incorrect");
@@ -151,15 +152,16 @@ var answerQuestion = function (event) {
             score -= scorePenalty
             // check if time remaining is greater than timePenalty
             if (timer > timePenalty) {
-                // subtract time penalty from timer
+                // subtract time penalty from timer and update timer display
                 timer -= timePenalty;
+                timeRemainingEl.textContent = timer;
                 // add question back into rotation
                 quizQuestions.push(quizQuestions[currentQuestion]);
             } else {
-                // set timer to zero and end quiz
+                // stop timer, set to 0 and update display
+                clearInterval(startTimer);
                 timer = 0;
-                endQuiz(timesUpMessage);
-                return false;
+                timeRemainingEl.textContent = timer;
             }
         }
 
@@ -172,7 +174,9 @@ var answerQuestion = function (event) {
             timerEl.removeAttribute("class");
 
             // if there are more questions to answer, go to next question
-            if (currentQuestion < quizQuestions.length) {
+            if (timer === 0) {
+                endQuiz(timesUpMessage);
+            } else if (currentQuestion < quizQuestions.length) {
                 nextQuestion();
             } else {
                 endQuiz(answeredAllMessage);
