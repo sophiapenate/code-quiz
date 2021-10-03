@@ -4,26 +4,39 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Add Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Fira+Sans:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css" />
     <title>Code Quiz</title>
 </head>
+
 <body>
 
-    <header>
-        <h1>Code Quiz</h1>
-        <button>View High Scores</button>
-        <div id="timer-display">Time remaining: <span id="time-remaining"></span> seconds</div>
-    </header>
+    <!-- Wrap all content in div for styling -->
+    <div id="app-wrap">
 
-    <main id="quiz-container">
-        <h2 id="prompt-title">Welcome to the Coding Quiz Challenge!</h2>
-        <p id="prompt-details">Answer the questions before your time runs out.</p>
-        <ul id="options">
-            <button id="start-btn">Start</button>
-        </ul>
-    </main>
+        <header>
+            <h1>Coding Quiz</h1>
+            <button>View High Scores</button>
+        </header>
+
+        <main>
+            <!-- <div id="timer-display">Time remaining: <span id="time-remaining"></span> seconds</div> -->
+
+            <h2 id="prompt-title">Welcome to the Coding Quiz Challenge!</h2>
+            <p id="prompt-details">Answer the questions before your time runs out.</p>
+            <ul id="options">
+                <button id="start-btn">Start</button>
+            </ul>
+        </main>
+        
+    </div>
+    <!-- End #app-wrap -->
 
     <script src="assets/js/script.js"></script>
-    
+
 </body>
+
 </html>

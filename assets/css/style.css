@@ -1,0 +1,71 @@
+/* Site Colors */
+:root {
+    --primary-color: #0B132B;
+    --secondary-color: #2B3B56;
+    --primary-accent: #00BFFF;
+    --correct-accent: #18D885;
+    --incorrect-accent: #EC3A45;
+    --white: #FFFFFF;
+}
+/* End Site Colors */
+
+/* Utility Classes */
+.code {
+    font-family: 'Fira Code', monospace;
+}
+/* End Utility Classes */
+
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--primary-color);
+    font-family: 'Fira Sans', sans-serif;
+    color: var(--white);
+}
+
+button {
+    background-color: var(--secondary-color);
+    color: var(--white);
+    padding: 12px 18px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    letter-spacing: .03em;
+}
+
+button:hover {
+    cursor: pointer;
+    background-color: var(--primary-accent);
+}
+
+#app-wrap {
+    width: 90%;
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 60px;
+}
+
+main {
+    margin:0 30px;
+}
+/* End Global Styles */
+
+/* Header Styles */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 60px;
+}
+
+header h1 {
+    font-size: 42px;
+    letter-spacing: .03em;
+    color: var(--primary-accent);
+}
+

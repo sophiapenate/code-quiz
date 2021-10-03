@@ -93,6 +93,11 @@ var loadScores = function() {
 loadScores();
 /*** END QUIZ SETUP AND VARIABLE DECLARATIONS ***/
 
+// Reset content for startQuiz
+var resetQuiz = function() {
+    
+}
+
 // Start Quiz Function - To call when start button is clicked
 var startQuiz = function() {
     // start timer
