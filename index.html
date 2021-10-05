@@ -14,19 +14,21 @@
 
 <body>
 
-    <!-- Wrap all content in div for styling -->
+    <!-- Wrap everything in div for styling -->
     <div id="app-wrap">
 
         <header>
             <h1>Coding Quiz</h1>
             <button id="view-scores">View High Scores</button>
+            <!-- button to reload page and start quiz from beginning -->
             <button id="reload" class="hide"></button>
             <div id="timer-display">Time remaining: <span id="time-remaining"></span> seconds</div>
         </header>
 
         <main>
-            <div id="prompt">
+            <div id="content">
                 <h2>Welcome to the Coding Quiz Challenge!</h2>
+                <!-- instructions added with js -->
                 <p id="instructions"></p>
                 <p>Click START to begin!</p>
             </div>
