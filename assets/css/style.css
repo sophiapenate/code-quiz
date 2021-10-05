@@ -127,26 +127,26 @@ header #timer-display {
 /* End Header Styles */
 
 /* Main Section Styles */
-#prompt {
+#content {
     margin: 15px;
     text-align: center;
 }
 
-#prompt h2 {
+#content h2 {
     font-size: 32px;
     padding: .5em 0;
     line-height: 1.5em;
     letter-spacing: .03em;
 }
 
-#prompt h3 {
+#content h3 {
     font-size: 28px;
     padding: .5em 0;
     line-height: 1.5em;
     letter-spacing: .03em;
 }
 
-#prompt p {
+#content p {
     font-size: 20px;
     margin: 1em 0 1.5em 0;
     line-height: 1.5em;

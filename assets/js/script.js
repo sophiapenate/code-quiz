@@ -1,22 +1,13 @@
-/*** QUIZ SETTINGS ***/
-// Set, in seconds, time given to finish quiz
-var timeGiven = 100;
+// Quiz Settings
+var timeGiven = 100; // initial time given to complete quiz
+var timePenalty = 10; // time deducted for incorrect answer
+var scorePenalty = 50; // points deducted for incorrect answer
+var timeReward = 5; // time rewarded for correct answer
+var scoreReward = 100; // points rewarded for correct answer
+var timesUpMessage = "Time's Up!"; // message to display when time runs out
+var answeredAllMessage = "Excellent!"; // message to display if quiz ends because all questions were answered correctly
 
-// Set penalties for answering incorrectly
-var timePenalty = 10;
-var scorePenalty = 50;
-
-// Set rewards for answering correctly
-var timeReward = 5;
-var scoreReward = 100;
-
-// Set message to display if player runs out of time
-var timesUpMessage = "Time's Up!"
-
-// Set message to display if player answeres all questions before time runs out
-var answeredAllMessage = "Excellent!"
-
-// Set quiz questions
+// Quiz Questions
 var quizQuestions = [
     {
         question: "Question 1",
@@ -49,85 +40,56 @@ var quizQuestions = [
         answer: "True statement"
     }
 ];
-/*** END QUIZ SETTINGS ***/
 
-/*** QUIZ SETUP AND VARIABLE DECLARATIONS ***/
 // randomize order of quiz questions
 quizQuestions.sort(function (a, b) { return 0.5 - Math.random() });
 
-// Setup timer
+// setup timer
 var timer = timeGiven;
 var timeRemainingEl = document.querySelector("#time-remaining");
 timeRemainingEl.textContent = timer;
-// Declare startTimer variable globally, so other functions can clear interval
 var startTimer;
 
-// Store #quiz-content elements in variables
-var mainEl = document.querySelector("main");
-var timerEl = document.querySelector("#timer-display");
+// set counters
+var currentQuestion = 0;
+var correctAnswersCounter = 0;
+var incorrectAnswersCounter = 0;
+var score = 0;
+
+// declare scoresArr globally
+var scoresArr;
+
+// store page elements in variables
 var viewScoresBtn = document.querySelector("#view-scores");
+var timerEl = document.querySelector("#timer-display");
 var reloadBtn = document.querySelector("#reload");
-var promptEl = document.querySelector("#prompt");
+var contentEl = document.querySelector("#content");
 var optionsEl = document.querySelector("#options");
 var startBtn = document.querySelector("#start-btn");
 
-// Add instructions to page
+// add instructions to page
 var instructionsEl = document.querySelector("#instructions");
 instructionsEl.textContent = "You have " + timeGiven + " seconds to answer " + quizQuestions.length + " questions.";
 
-// Set currentQuestion counter
-var currentQuestion = 0;
-
-// Set counter to track number of questions anwered correctly and incorrectly
-var correctAnswersCounter = 0;
-var incorrectAnswersCounter = 0;
-
-// Declare score variable globally so multiple functions can access it
-var score = 0;
-
-// Create array to store any new scores, and load any scores from localStorage into it
-var newScores = []
-var loadScores = function () {
-    var savedScores = localStorage.getItem("scores");
-
-    // if there are no saved scores, return out of function
-    if (!savedScores) {
-        return false;
-    } else {
-        // parse savedScores into an array of objects
-        savedScores = JSON.parse(savedScores);
-
-        // Loop through objects in savedScores and push into newScores
-        for (var i = 0; i < savedScores.length; i++) {
-            newScores.push(savedScores[i]);
-        }
-    }
-}
-loadScores();
-/*** END QUIZ SETUP AND VARIABLE DECLARATIONS ***/
-
-// Start Quiz Function - To call when start button is clicked
 var startQuiz = function () {
     // start timer
     startTimer = setInterval(function () {
         timer--;
         timeRemainingEl.textContent = timer;
-        // when timer runs out, stop timer and end quiz
         if (timer === 0) {
             clearInterval(startTimer);
             endQuiz(timesUpMessage);
         }
-    }, 1000)
+    }, 1000);
 
     // call first question
     nextQuestion();
 }
 
-// Answer Question Function - To call when a question is answered
 var answerQuestion = function (event) {
-    // check if a question button was clicked before proceeding
+    // check if a answer button was clicked before proceeding
     var targetEl = event.target;
-    if (targetEl.matches(".question-btn")) {
+    if (targetEl.matches(".answer-btn")) {
         // check if answered correctly or incorrectly
         var pickedAnswer = targetEl.textContent;
         var correctAnswer = quizQuestions[currentQuestion].answer;
@@ -135,79 +97,73 @@ var answerQuestion = function (event) {
             // change color of button and timer
             targetEl.setAttribute("class", "correct");
             timerEl.setAttribute("class", "correct");
-            // add 1 to correctAnswersCounter
+            // update counters
             correctAnswersCounter++;
-            // add scoreReward to score
             score += scoreReward;
-            // add timeReward to timer and update timer display
             timer += timeReward;
             timeRemainingEl.textContent = timer;
         } else {
+            // add question back into rotation
+            quizQuestions.push(quizQuestions[currentQuestion]);
             // change color of button and timer
             targetEl.setAttribute("class", "incorrect");
             timerEl.setAttribute("class", "incorrect");
-            // add 1 to incorrectAnswersCounter
+            // update counters
             incorrectAnswersCounter++;
-            // subtract scorePenalty from score
             score -= scorePenalty
-            // check if time remaining is greater than timePenalty
+            // before updating timer, check if time remaining is greater than timePenalty
             if (timer > timePenalty) {
-                // subtract time penalty from timer and update timer display
                 timer -= timePenalty;
                 timeRemainingEl.textContent = timer;
-                // add question back into rotation
-                quizQuestions.push(quizQuestions[currentQuestion]);
             } else {
-                // stop timer, set to 0 and update display
                 clearInterval(startTimer);
                 timer = 0;
                 timeRemainingEl.textContent = timer;
             }
-        }
+        };
 
         // update currentQuestion counter
         currentQuestion++;
 
-        // pause long enough for player to see if they were correct or incorrect, then...
+        // pause long enough for player to see if they were correct or incorrect
         setTimeout(function() {
             // remove color from timer
             timerEl.removeAttribute("class");
 
-            // if there are more questions to answer, go to next question
+            // check there is time left
             if (timer === 0) {
                 endQuiz(timesUpMessage);
+            // check if there are more questions to answer
             } else if (currentQuestion < quizQuestions.length) {
                 nextQuestion();
             } else {
                 endQuiz(answeredAllMessage);
             }
         }, 500);  
-    }
+    };
 }
 
-// Next Question Function - To call at start of quiz and after each question is answered
 var nextQuestion = function () {
-    // clear #quiz-content
-    promptEl.innerHTML = "";
+    // clear main content
+    contentEl.innerHTML = "";
     optionsEl.innerHTML = "";
 
-    // place current question in p tag and add to promptEl
+    // place current question in p tag and add to contentEl
     var questionEl = document.createElement("p");
     questionEl.textContent = quizQuestions[currentQuestion].question;
-    promptEl.appendChild(questionEl);
+    contentEl.appendChild(questionEl);
 
     // loop through current question's options and create button for each
     for (var i = 0; i < quizQuestions[currentQuestion].options.length; i++) {
         var optionBtn = document.createElement("button");
-        optionBtn.className = "question-btn";
+        optionBtn.className = "answer-btn";
         optionBtn.textContent = quizQuestions[currentQuestion].options[i];
         optionsEl.appendChild(optionBtn);
-    }
+    };
 }
 
-// End Quiz Function - To call when timer or questions run out
 var endQuiz = function (message) {
-    // stop timer and hide
+    // stop and hide timer
     clearInterval(startTimer);
     timerEl.setAttribute("class", "hide");
 
@@ -219,36 +175,35 @@ var endQuiz = function (message) {
     if (timer > 0) { score += timer };
     // if player earned negative points, reset score to 0
     if (score < 0) { score = 0 };
-    console.log(score);
 
-    // clear #quiz-content
-    promptEl.innerHTML = "";
+    // clear main content
+    contentEl.innerHTML = "";
     optionsEl.innerHTML = "";
 
     // add end quiz header
     var endHeaderEl = document.createElement("h2");
     endHeaderEl.textContent = message;
-    promptEl.appendChild(endHeaderEl);
+    contentEl.appendChild(endHeaderEl);
 
     // add player's score
     var playerScoreEl = document.createElement("h3");
     playerScoreEl.textContent = "You finished with " + score + " points!";
-    promptEl.appendChild(playerScoreEl);
+    contentEl.appendChild(playerScoreEl);
 
     // add player's detailed stats
     var playerDetailsEl = document.createElement("p");
     playerDetailsEl.textContent = "You answered " + correctAnswersCounter + " questions correctly with " + timer + " seconds remaining. You made " + incorrectAnswersCounter + " mistakes.";
-    promptEl.appendChild(playerDetailsEl);
+    contentEl.appendChild(playerDetailsEl);
 
     // add instructions for player to submit name
-    var namePromptEl = document.createElement("p");
-    namePromptEl.textContent = "Enter your name to save your score."
-    promptEl.appendChild(namePromptEl);
+    var namecontentEl = document.createElement("p");
+    namecontentEl.textContent = "Enter your name to save your score.";
+    contentEl.appendChild(namecontentEl);
 
     // add form for player to enter name
     var nameForm = document.createElement("form");
-    var nameInput = document.createElement("input")
-    var nameSubmit = document.createElement("input")
+    var nameInput = document.createElement("input");
+    var nameSubmit = document.createElement("input");
     nameInput.setAttribute("type", "text");
     nameInput.setAttribute("name", "player-name");
     nameInput.setAttribute("placeholder", "Your Name");
@@ -262,36 +217,60 @@ var endQuiz = function (message) {
     nameInput.focus();
 
     // add event listener to form
-    nameForm.addEventListener("submit", saveScore);
+    nameForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+        saveScore();
+        viewHighScores();
+    });
 }
 
-// Save player's score to localStorage
-var saveScore = function (event) {
-    event.preventDefault();
+// push scores from localStorage into scoresArr
+var loadScores = function () {
+    // reset scoresArr with scores from local storage
+    scoresArr = [];
+    var savedScores = localStorage.getItem("scores");
+
+    // if there are no saved scores, return out of function
+    if (!savedScores) {
+        return false;
+    } else {
+        // parse savedScores into an array of objects
+        savedScores = JSON.parse(savedScores);
+
+        // loop through objects in savedScores and push into scoresArr
+        for (var i = 0; i < savedScores.length; i++) {
+            scoresArr.push(savedScores[i]);
+        }
+    };
+}
+
+var saveScore = function () {
+    // update scoresArr
+    loadScores();
+
+    // set playerStats object properties
     var playerName = document.querySelector("input[name='player-name']").value;
     // if player leaves name blank, set name to 'Anonymous'
     if (!playerName) { playerName = "Anonymous" };
-
     var playerStats = {
         name: playerName,
         score: score
-    }
+    };
 
-    // push playerStats into scores array
-    newScores.push(playerStats);
+    // push playerStats into scoresArr
+    scoresArr.push(playerStats);
 
-    // sort newScores by score
-    newScores.sort(function (a, b) { return b.score - a.score });
-    console.log(newScores);
+    // sort scoresArr by score
+    scoresArr.sort(function (a, b) { return b.score - a.score });
 
-    // overwrite scores array in localStorage with newScores array
-    localStorage.setItem("scores", JSON.stringify(newScores));
-
-    viewHighScores();
+    // overwrite scores array in localStorage with scoresArr
+    localStorage.setItem("scores", JSON.stringify(scoresArr));
 }
 
-// View High Scores Function - Call when button clicked or player saves their score
-var viewHighScores = function() {    
+var viewHighScores = function() {
+    //update scoresArr
+    loadScores();
+    
     // stop and hide timer
     clearInterval(startTimer);
     timerEl.setAttribute("class", "hide");
@@ -304,12 +283,18 @@ var viewHighScores = function() {
     reloadBtn.setAttribute("class", "show");
     
     // clear main content
-    mainEl.innerHTML = "";
+    contentEl.innerHTML = "";
+    optionsEl.innerHTML = "";
+
+    // add high scores header
+    var scoresHeaderEl = document.createElement("h2");
+    scoresHeaderEl.textContent = "High Scores";
+    contentEl.appendChild(scoresHeaderEl);
 
     // setup high scores table
     var scoresTableEl = document.createElement("table");
-    scoresTableEl.id = "high-scores"
-    mainEl.appendChild(scoresTableEl);
+    scoresTableEl.id = "high-scores";
+    contentEl.appendChild(scoresTableEl);
     var scoresTitleRowEl = document.createElement("tr");
     scoresTableEl.appendChild(scoresTitleRowEl);
     var rankTitleEl = document.createElement("th");
@@ -322,16 +307,15 @@ var viewHighScores = function() {
     scoreTitleEl.textContent = "Score";
     scoresTitleRowEl.appendChild(scoreTitleEl);
 
-    // loop through newScores (which has already been loaded with saved scores) and add tr for each score
-    for (var i = 0; i < newScores.length; i++) {
+    // loop through scoresArr and add tr for each score
+    for (var i = 0; i < scoresArr.length; i++) {
         // create tr
         var rowEl = document.createElement("tr");
-        rowEl.innerHTML = "<td>#" + (i + 1) + "</td><td>" + newScores[i].name + "</td><td>" + newScores[i].score + "</td>";
+        rowEl.innerHTML = "<td>#" + (i + 1) + "</td><td>" + scoresArr[i].name + "</td><td>" + scoresArr[i].score + "</td>";
         scoresTableEl.appendChild(rowEl);
-    }
+    };
 }
 
-// Reload Page Function - call when player clicks reloadBtn
 var reload = function() {
     location.reload();
 }
