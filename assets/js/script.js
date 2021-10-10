@@ -10,34 +10,64 @@ var answeredAllMessage = "Excellent!"; // message to display if quiz ends becaus
 // Quiz Questions
 var quizQuestions = [
     {
-        question: "Question 1",
+        question: "What is the correct syntax for referring to an external JavaScript file called \"xxx.js\"?",
         options: [
-            "Correct",
-            "Incorrect",
-            "Another incorrect",
-            "Incorrect again"
+            "<script src =\"xxx.js\">",
+            "<script href=\"xxx.js\">",
+            "<js src =\"xxx.js\">",
+            "<javascript href=\"xxx.js\">"
         ],
-        answer: "Correct"
+        answer: "<script src =\"xxx.js\">"
     },
     {
-        question: "Question 2",
+        question: "How do you create a function in JavaScript",
         options: [
-            "Right answer",
-            "Wrong again",
-            "Another wrong answer",
-            "This is wrong, too."
+            "function:myFunction()",
+            "function = myFunction()",
+            "var myFunction() =",
+            "function myFunction()"
         ],
-        answer: "Right answer"
+        answer: "function myFunction()"
     },
     {
-        question: "Question 3",
+        question: "How do you write an IF statement for executing some code if 'i' is NOT equal to 5?",
         options: [
-            "True statement",
-            "False statement",
-            "Another false statement",
-            "This statement is false, too."
+            "if i <> 5",
+            "if (i <> 5)",
+            "if (i != 5)",
+            "if i != 5 then"
         ],
-        answer: "True statement"
+        answer: "if (i != 5)"
+    },
+    {
+        question: "How does a FOR loop start?",
+        options: [
+            "for (var i = 0; i < 10; i++)",
+            "for (i = 0; i++; i = 10)",
+            "for (var i = 10; i++; 10)",
+            "for (var i = 0; i < 10)"
+        ],
+        answer: "for (var i = 0; i < 10; i++)"
+    },
+    {
+        question: "How do you write a JavaScript array?",
+        options: [
+            "var colors = 1 = (\"red\"), 2 = (\"green\"), 3 = (\"blue\")",
+            "var colors[] = \"red\", \"green\", \"blue\"",
+            "var colors = [\"red\", \"green\", \"blue\"]",
+            "var colors = {\"red\", \"green\", \"blue\"}"
+        ],
+        answer: "var colors = [\"red\", \"green\", \"blue\"]"
+    },
+    {
+        question: "How do you round the number 7.8 to the nearest integer?",
+        options: [
+            "round(7.8)",
+            "Math.floor(7.8)",
+            "Math.round(7.8)",
+            "rnd(7.8)"
+        ],
+        answer: "Math.round(7.8)"
     }
 ];
 
