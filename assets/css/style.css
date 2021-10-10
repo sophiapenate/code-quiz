@@ -19,10 +19,6 @@
     display: block;
 }
 
-.code {
-    font-family: 'Fira Code', monospace;
-}
-
 .correct,
 .correct:hover {
     background-color: var(--correct-accent) !important;
@@ -52,14 +48,14 @@ body {
     width: 90%;
     max-width: 1200px;
     margin: 60px auto;
-    padding: 50px 70px 70px 70px;
+    padding: 50px 5% 70px 5%;
     background-color: var(--secondary-color);
     border-radius: 15px;
     box-shadow: 0 0 12px #000000;
 }
 
 main {
-    margin:0 30px;
+    margin:0 2%;
 }
 
 button,
@@ -128,7 +124,7 @@ header #timer-display {
 
 /* Main Section Styles */
 #content {
-    margin: 15px;
+    margin: 15px 0;
     text-align: center;
 }
 
@@ -195,3 +191,26 @@ header #timer-display {
 
 /* End High Scores Table Styles */
 
+
+@media only screen and (max-width: 768px) {
+    #app-wrap {
+        text-align: center;
+    }
+
+    header {
+        text-align: center;
+        display: inline-block;
+    }
+
+    header button {
+        margin: 15px auto;
+    }
+
+    #high-scores th,
+    #high-scores td {
+        font-size: 16px;
+        padding: 15px;
+        max-width: 100px;
+        word-wrap: break-word;
+    }
+}
